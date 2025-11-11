@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\App">
+      <UniqueIdentifier>{aa47869d-9e86-4fc0-969e-76f9ff59c383}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{79dd9eee-4390-4a4f-99fe-b9d161165751}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Renderer">
+      <UniqueIdentifier>{26d13a80-d7e2-4fb4-a577-9c639f644ee1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scene">
+      <UniqueIdentifier>{cb773586-a939-487c-a0d9-e95abc6f1ae7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{e19a2b86-2aa0-412f-b7c2-c4e426931d6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{31e681b9-b6fa-4dde-9bad-0945520dcea2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{a98693bc-cf65-41ff-b4da-9f20a645bc0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty">
+      <UniqueIdentifier>{cb7ac520-17da-4ccf-8eee-417a1c9291ac}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="App.cpp">
+      <Filter>Source Files\App</Filter>
+    </ClCompile>
+    <ClCompile Include="Win32Window.cpp">
+      <Filter>Source Files\App</Filter>
+    </ClCompile>
+    <ClCompile Include="InputMgr.cpp">
+      <Filter>Source Files\App</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanContext.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Win32Window.h">
+      <Filter>Source Files\App</Filter>
+    </ClInclude>
+    <ClInclude Include="InputMgr.h">
+      <Filter>Source Files\App</Filter>
+    </ClInclude>
+    <ClInclude Include="App.h">
+      <Filter>Source Files\App</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanContext.h">
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
