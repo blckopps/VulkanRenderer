@@ -48,7 +48,7 @@ namespace vkapp {
 
         // Engine subsystems (owned here or injected in Init)
         std::unique_ptr<VulkanContext> m_vkContext;
-        //std::unique_ptr<Renderer> m_renderer;
+        std::unique_ptr<Renderer> m_renderer;
         //std::unique_ptr<Scene> m_scene;
 
         std::string m_title;

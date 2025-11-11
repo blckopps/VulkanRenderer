@@ -610,6 +610,12 @@ VkFence VulkanContext::GetFence(size_t frame) const
     return m_Fences[frame % m_swapchainImageCount];
 }
 
+VkCommandBuffer VulkanContext::GetCommandBuffer(size_t frame) const
+{
+    return m_commandBuffers[frame % m_swapchainImageCount];
+}
+
+
 // Recreate swapchain (basic)
 bool VulkanContext::RecreateSwapchain(int width, int height)
 {

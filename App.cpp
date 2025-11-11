@@ -5,7 +5,7 @@
 
 // Forward declarations of your engine modules - include real headers in your project
 #include "VulkanContext.h"  
-//#include "../renderer/Renderer.h"
+#include "Renderer.h"
 //#include "../scene/Scene.h"
 
 using namespace vkapp;
@@ -20,7 +20,7 @@ App::App(const std::string& title, int width, int height)
 App::~App()
 {
     // ensure proper teardown order: renderer -> scene -> vk -> window
-    //m_renderer.reset();
+    m_renderer.reset();
    // m_scene.reset();
     m_vkContext.reset();
     m_inputMgr.reset();
@@ -42,13 +42,13 @@ bool App::Init()
     }
 
     // Scene + Renderer initialization (replace with your actual constructors)
-   /* m_scene = std::make_unique<Scene>();
-    m_renderer = std::make_unique<Renderer>();*/
+   // m_scene = std::make_unique<Scene>();
+    m_renderer = std::make_unique<Renderer>();
 
-    /*if (!m_renderer->Init(m_vkContext.get(), m_scene.get())) {
+    if (!m_renderer->Init(m_vkContext.get())) {
         std::cerr << "Failed to initialize Renderer\n";
         return false;
-    }*/
+    }
 
     // Hook resize event so app can inform renderer
     m_window->SetOnResizeCallback([this](int w, int h) {
@@ -91,7 +91,7 @@ void App::Run()
         if (m_resized)
         {
             m_resized = false;
-            //m_renderer->OnResize(m_width, m_height);
+            m_renderer->OnResize(m_width, m_height);
         }
 
         // Update input state

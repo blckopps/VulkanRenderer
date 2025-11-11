@@ -56,9 +56,10 @@ namespace vkapp {
         VkResult QueuePresent(uint32_t imageIndex, VkSemaphore waitSemaphore);
 
         // Per-frame sync handles getters
-        VkSemaphore GetImageAvailableSemaphore(size_t frame) const;
-        VkSemaphore GetRenderFinishedSemaphore(size_t frame) const;
-        VkFence GetFence(size_t frame) const;
+        VkSemaphore GetImageAvailableSemaphore(size_t frameIndex) const;
+        VkSemaphore GetRenderFinishedSemaphore(size_t frameIndex) const;
+        VkFence GetFence(size_t frameIndex) const;
+        VkCommandBuffer GetCommandBuffer(size_t frameIndex) const;
 
         // swapchain image count/frames(2 or 3)
         static constexpr size_t DEFAULT_SWAPCHAIN_IMAGE_COUNT = 2;
