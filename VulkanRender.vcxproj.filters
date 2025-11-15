@@ -67,4 +67,18 @@
       <Filter>Source Files\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="basic.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="basic.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\basic.frag.spv">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\basic.vert.spv">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
 </Project>

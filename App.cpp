@@ -42,7 +42,7 @@ bool App::Init()
     }
 
     // Scene + Renderer initialization (replace with your actual constructors)
-   // m_scene = std::make_unique<Scene>();
+    //m_scene = std::make_unique<Scene>();
     m_renderer = std::make_unique<Renderer>();
 
     if (!m_renderer->Init(m_vkContext.get())) {
@@ -117,14 +117,15 @@ void App::Tick(double dt)
 void App::RenderFrame(double dt)
 {
     // Call renderer to draw the scene
-    //if (!m_renderer->BeginFrame()) {
-    //    // If BeginFrame fails (e.g. swapchain out of date), recreate swapchain inside renderer
-    //    m_renderer->OnResize(m_width, m_height);
-    //    return;
-    //}
+    if (!m_renderer->BeginFrame())
+    {
+        // If BeginFrame fails (e.g. swapchain out of date), recreate swapchain inside renderer
+        m_renderer->OnResize(m_width, m_height);
+        return;
+    }
 
-    //m_renderer->Render(*m_scene, dt);
-    //m_renderer->EndFrame();
+    m_renderer->Render(dt);
+    m_renderer->EndFrame();
 }
 
 void App::RequestExit()
