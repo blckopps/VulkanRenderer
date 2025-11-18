@@ -62,12 +62,16 @@ namespace vkapp
         bool CreateFramebuffers();
         void CleanupFramebuffers();
 
+        bool CreateGraphicsPipelineLayout();
+
         bool CreateGraphicsPipeline();
-        void DestroyGraphicsPipeline();
+        void DestroyGraphicsPipelineAndLayout();
 
         bool CreateVertexBuffer();
         void DestroyVertexBuffer();
 
+        bool CreateDescriptorResources();
+        void DestroyDescriptorResources();
 
         // low-level helpers used internally
         uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
@@ -89,6 +93,14 @@ namespace vkapp
 
         VkBuffer m_stagingBuffer = VK_NULL_HANDLE;
         VkDeviceMemory m_stagingBufferMemory = VK_NULL_HANDLE;
+
+        //Descriptor set + layout + descriptor pool
+        VkDescriptorPool m_descriptorPool = VK_NULL_HANDLE;
+        VkDescriptorSetLayout m_descriptorSetLayout = VK_NULL_HANDLE;
+        std::vector<VkDescriptorSet> m_descriptorSets;
+
+        std::vector<VkBuffer> m_uniformBuffers;
+        std::vector<VkDeviceMemory> m_uniformBuffersMemory;
 
         size_t m_currentFrame = 0;
         uint32_t m_imageIndex = 0;

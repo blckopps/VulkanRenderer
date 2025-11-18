@@ -139,8 +139,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="InputMgr.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="UniformBufferObject.h" />
     <ClInclude Include="VulkanContext.h" />
     <ClInclude Include="Win32Window.h" />
   </ItemGroup>

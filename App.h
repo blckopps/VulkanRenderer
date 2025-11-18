@@ -17,9 +17,9 @@
 
 namespace vkapp {
 
-    class VulkanContext;   // forward (implement in core/)
-    class Renderer;        // forward (implement in renderer/)
-    class Scene;           // forward (implement in scene/)
+    class VulkanContext;   
+    class Renderer;       
+    class Scene;          
 
     class App {
     public:

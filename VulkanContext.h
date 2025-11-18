@@ -14,6 +14,9 @@
 #endif
 #include <windows.h>
 
+
+#include <glm/gtc/matrix_transform.hpp> // Required for glm::rotate
+
 namespace vkapp {
 
     struct SwapchainInfo 
