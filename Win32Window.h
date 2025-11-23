@@ -27,6 +27,7 @@ namespace vkapp {
         HWND GetHWND() const noexcept { return m_hwnd; }
         int Width() const noexcept { return m_width; }
         int Height() const noexcept { return m_height; }
+        BOOL IsWindowMinimized() const noexcept { return m_isWindowMinimized; };
 
         void SetOnResizeCallback(ResizeCallback cb) { m_onResize = std::move(cb); }
 
@@ -44,5 +45,6 @@ namespace vkapp {
         HINSTANCE m_hInstance = nullptr;
         ResizeCallback m_onResize;
         ATOM m_windowClassAtom = 0;
+        BOOL m_isWindowMinimized = FALSE;
     };
 } // namespace vkapp

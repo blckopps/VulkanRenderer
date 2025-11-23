@@ -81,6 +81,9 @@ void App::Run()
         if (!m_running)
             break;
 
+        if (m_window->IsWindowMinimized() == TRUE)
+            continue;
+
         // Frame timing
         auto now = std::chrono::steady_clock::now();
         std::chrono::duration<double> delta = now - m_lastTime;

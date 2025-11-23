@@ -99,11 +99,18 @@ LRESULT Win32Window::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg) {
     case WM_SIZE: {
-        int width = LOWORD(lParam);
-        int height = HIWORD(lParam);
-        m_width = width;
-        m_height = height;
-        if (m_onResize) m_onResize(width, height);
+        if (SIZE_MINIMIZED == wParam)
+            m_isWindowMinimized = TRUE;
+        else
+        {
+            int width = LOWORD(lParam);
+            int height = HIWORD(lParam);
+            m_isWindowMinimized = FALSE;
+            m_width = width;
+            m_height = height;
+            if (m_onResize) m_onResize(width, height);
+           
+        }
         return 0;
     }
     case WM_CLOSE:
@@ -112,6 +119,7 @@ LRESULT Win32Window::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
+
     default:
         return DefWindowProc(hWnd, msg, wParam, lParam);
     }

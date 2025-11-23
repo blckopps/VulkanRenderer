@@ -560,7 +560,8 @@ bool VulkanContext::CreateSyncObjects()
 
 void VulkanContext::CleanupSwapchain()
 {
-    if (m_device == VK_NULL_HANDLE) return;
+    if (m_device == VK_NULL_HANDLE)
+        return;
 
     for (auto iv : m_swapchainInfo.imageViews) {
         if (iv) vkDestroyImageView(m_device, iv, nullptr);
@@ -623,8 +624,13 @@ bool VulkanContext::RecreateSwapchain(int width, int height)
 
     CleanupSwapchain();
 
-    if (!CreateSwapchain(static_cast<uint32_t>(width), static_cast<uint32_t>(height))) return false;
-    if (!CreateImageViews()) return false;
+    if (!CreateSwapchain(static_cast<uint32_t>(width), static_cast<uint32_t>(height)))
+        return false;
+
+    if (!CreateImageViews())
+        return false;
+
+    //TODO:
     // If you have depth buffers, framebuffers, renderpasses - recreate them here too.
 
     return true;
