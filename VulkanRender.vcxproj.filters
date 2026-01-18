@@ -72,19 +72,27 @@
     <ClInclude Include="Camera.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="basic.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="basic.vert">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shaders\basic.frag.spv">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\basic.vert.spv">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\basic.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\basic.vert">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="rock.png">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>

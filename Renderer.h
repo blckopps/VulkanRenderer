@@ -11,10 +11,29 @@ namespace vkapp
     class VulkanContext;
     class Scene; 
 
+
+    struct Texture
+    {
+        VkImage vkImage = VK_NULL_HANDLE;
+        VkDeviceMemory vkDeviceMemory = VK_NULL_HANDLE;
+        VkImageView vkImageView = VK_NULL_HANDLE;
+        VkSampler vkSampler = VK_NULL_HANDLE;
+
+        int width = 0;
+        int height = 0;
+    };
+
+    struct Material
+    {
+        Texture *texture = nullptr;
+        VkDescriptorSet vkDescriptorSet = VK_NULL_HANDLE;
+    };
+
     struct Vertex
     {
         float pos[3];
         float color[3];
+        float uv[2];
 
         static VkVertexInputBindingDescription getBindingDesc()
         {
@@ -25,18 +44,29 @@ namespace vkapp
             return vkVertexInputBindingDescription;
         }
 
-        static std::array<VkVertexInputAttributeDescription, 2> getAttribDesc()
+        static std::array<VkVertexInputAttributeDescription, 3> getAttribDesc()
         {
-            std::array<VkVertexInputAttributeDescription, 2> attrs{};
+            std::array<VkVertexInputAttributeDescription, 3> attrs{};
+
+            //POSITION
             attrs[0].binding = 0;                   // is the binding number which this attribute takes its data from.
             attrs[0].location = 0;                  //layout(location=0) in vec3 vPosition
             attrs[0].format = VK_FORMAT_R32G32B32_SFLOAT;
             attrs[0].offset = offsetof(Vertex, pos);
 
+            //COLOR
             attrs[1].binding = 0;                   // is the binding number which this attribute takes its data from.
             attrs[1].location = 1;                  //layout(location=1) in vec3 color
             attrs[1].format = VK_FORMAT_R32G32B32_SFLOAT; 
             attrs[1].offset = offsetof(Vertex, color);  //Jump
+
+            //UV
+            attrs[2].binding = 0;                   // is the binding number which this attribute takes its data from.
+            attrs[2].location = 2;                  //layout(location=1) in vec3 color
+            attrs[2].format = VK_FORMAT_R32G32_SFLOAT;
+            attrs[2].offset = offsetof(Vertex, uv);  //Jump
+
+
             return attrs;
         }
     };
@@ -73,11 +103,15 @@ namespace vkapp
         bool CreateIndexBuffer();
         void DestroyIndexBuffer();
 
-        bool CreateDescriptorResources();
-        void DestroyDescriptorResources();
+        bool CreateDescriptorResourcesFrame();
+        void DestroyDescriptorResourcesFrame();
          
         bool CreateDepthResource();
         void DestroyDepthResource();
+
+        //Texture
+        bool CreateTexture(const char* path, Texture* texture);
+        void DestroyTexture();
 
         // low-level helpers used internally
         uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
@@ -109,9 +143,15 @@ namespace vkapp
         VkBuffer m_stagingBuffer = VK_NULL_HANDLE;
         VkDeviceMemory m_stagingBufferMemory = VK_NULL_HANDLE;
 
-        //Descriptor set + layout + descriptor pool
-        VkDescriptorPool m_descriptorPool = VK_NULL_HANDLE;
-        VkDescriptorSetLayout m_descriptorSetLayout = VK_NULL_HANDLE;
+        //Descriptor set + layout + descriptor pool for per frame and material
+        //Per frame
+        VkDescriptorPool m_descriptorPoolFrame = VK_NULL_HANDLE;
+        VkDescriptorSetLayout m_descriptorSetLayoutFrame = VK_NULL_HANDLE;
+        
+        //Material
+        VkDescriptorPool m_descriptorPoolMaterial = VK_NULL_HANDLE;
+        VkDescriptorSetLayout m_descriptorSetLayoutMaterial = VK_NULL_HANDLE;
+
         std::vector<VkDescriptorSet> m_descriptorSets;
 
         std::vector<VkBuffer> m_uniformBuffers;
@@ -126,5 +166,10 @@ namespace vkapp
 
         VkClearDepthStencilValue vkClearDepthStencilValue{};
         VkClearColorValue vkClearColorValue{};
+
+        //Texture/Material
+        Texture m_texture{};
+        Material m_material{};
+
     };
 } // namespace vkapp
