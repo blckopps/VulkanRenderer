@@ -105,6 +105,9 @@ namespace vkapp
 
         bool CreateDescriptorResourcesFrame();
         void DestroyDescriptorResourcesFrame();
+
+        bool CreateDescriptorResourcesMaterial();
+        void DestroyDescriptorResourcesMaterial();
          
         bool CreateDepthResource();
         void DestroyDepthResource();
@@ -153,6 +156,7 @@ namespace vkapp
         VkDescriptorSetLayout m_descriptorSetLayoutMaterial = VK_NULL_HANDLE;
 
         std::vector<VkDescriptorSet> m_descriptorSets;
+        std::vector<VkDescriptorSet> m_descriptorSetsMaterial;
 
         std::vector<VkBuffer> m_uniformBuffers;
         std::vector<VkDeviceMemory> m_uniformBuffersMemory;

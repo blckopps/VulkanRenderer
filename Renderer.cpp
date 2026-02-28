@@ -245,16 +245,23 @@ bool Renderer::Init(VulkanContext* context, Scene* scene)
 
 
     //Descriptor init..needs before pipeline
-   /* if (!CreateDescriptorResources())
+    if (!CreateDescriptorResourcesFrame())
     {
-        std::cerr << "Failed to create descriptor resources\n";
+        std::cerr << "Failed to create descriptor resources frame\n";
         return false;
-    }*/
+    }
 
     //Create texture
     if (!CreateTexture("D:\\VKRender\\VulkanRender\\rock.png", &m_texture))
     {
         std::cerr << "Failed to create texture!!!\n";
+        return false;
+    }
+
+
+    if (!CreateDescriptorResourcesMaterial())
+    {
+        std::cerr << "Failed to create descriptor resources material\n";
         return false;
     }
 
@@ -743,6 +750,108 @@ bool Renderer::CreateDescriptorResourcesFrame()
     }
 
     return true;
+}
+
+bool vkapp::Renderer::CreateDescriptorResourcesMaterial()
+{
+    //Create descriptor set layout
+    VkDescriptorSetLayoutBinding materialLayoutBinding{};
+    materialLayoutBinding.binding = 0;                           //Binding in shader "layout(binding=0) uniform mvpMatrix"
+    materialLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    materialLayoutBinding.descriptorCount = 1;
+    materialLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    materialLayoutBinding.pImmutableSamplers = nullptr;
+
+    VkDescriptorSetLayoutCreateInfo vkDescriptorSetLayoutCreateInfo{ VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO };
+    vkDescriptorSetLayoutCreateInfo.pNext = nullptr;
+    vkDescriptorSetLayoutCreateInfo.bindingCount = 1;
+    vkDescriptorSetLayoutCreateInfo.flags = 0;
+    vkDescriptorSetLayoutCreateInfo.pBindings = &materialLayoutBinding;
+
+
+    if(vkCreateDescriptorSetLayout(m_context->Device(),
+        &vkDescriptorSetLayoutCreateInfo, nullptr, &m_descriptorSetLayoutMaterial) != VK_SUCCESS)
+    {
+        std::cerr << "Failed to create descriptor layout for material\n";
+        return false;
+    }
+
+    //TODO:
+    // poolSize.descriptorCount = materialCount;
+    //  poolInfo.maxSets = materialCount;
+    // Descriptor pool
+    VkDescriptorPoolSize poolSize{};
+    poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    poolSize.descriptorCount = 1;   //one material
+
+    VkDescriptorPoolCreateInfo vkDescriptorPoolCreateInfo{ VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO };
+    vkDescriptorPoolCreateInfo.poolSizeCount = 1;       ////numof above struct count i.e poolsize
+    vkDescriptorPoolCreateInfo.pPoolSizes = &poolSize;
+    vkDescriptorPoolCreateInfo.maxSets = 1;
+
+    if (vkCreateDescriptorPool(m_context->Device(), &vkDescriptorPoolCreateInfo, nullptr, &m_descriptorPoolMaterial) != VK_SUCCESS)
+    {
+        std::cerr << "Failed to create descriptor pool for material\n";
+        return false;
+    }
+
+    m_descriptorSetsMaterial.resize(1);
+    //Allocate material descriptor set
+    VkDescriptorSetAllocateInfo vkDescriptorSetAllocateInfo{ VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO };
+    vkDescriptorSetAllocateInfo.descriptorPool = m_descriptorPoolMaterial;
+    vkDescriptorSetAllocateInfo.descriptorSetCount = 1;
+    vkDescriptorSetAllocateInfo.pSetLayouts = &m_descriptorSetLayoutMaterial;
+
+    if (vkAllocateDescriptorSets(m_context->Device(), &vkDescriptorSetAllocateInfo, m_descriptorSetsMaterial.data()) != VK_SUCCESS)
+    {
+        std::cerr << "Failed to allocate descriptor sets\n";
+        return false;
+    }
+
+    //update material descriptors
+    for (auto materialDescriptr : m_descriptorSetsMaterial)
+    {
+
+        VkDescriptorImageInfo  imageInfo{};
+        imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        imageInfo.imageView = m_texture.vkImageView;
+        imageInfo.sampler = m_texture.vkSampler;
+
+        VkWriteDescriptorSet descriptorWrite{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET };
+        descriptorWrite.dstSet = materialDescriptr;
+        descriptorWrite.dstBinding = 0; //match shader binding
+        descriptorWrite.dstArrayElement = 0;
+        descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        descriptorWrite.descriptorCount = 1;
+        descriptorWrite.pImageInfo = &imageInfo;
+
+        vkUpdateDescriptorSets(
+            m_context->Device(),
+            1,
+            &descriptorWrite,
+            0,
+            nullptr);
+    }
+
+    return true;
+}
+
+void vkapp::Renderer::DestroyDescriptorResourcesMaterial()
+{
+    if (!m_context)
+        return;
+
+    VkDevice device = m_context->Device();
+
+    if (m_descriptorPoolMaterial)
+    {
+        vkDestroyDescriptorPool(device, m_descriptorPoolFrame, nullptr); m_descriptorPoolMaterial = VK_NULL_HANDLE;
+    }
+
+    if (m_descriptorSetLayoutMaterial)
+    {
+        vkDestroyDescriptorSetLayout(device, m_descriptorSetLayoutMaterial, nullptr); m_descriptorSetLayoutMaterial = VK_NULL_HANDLE;
+    }
 }
 
 bool Renderer::CreateDepthResource()
@@ -1378,8 +1487,21 @@ void Renderer::Render( double /*dt*/)
         vkCmdBindDescriptorSets(cmd,
             VK_PIPELINE_BIND_POINT_GRAPHICS,
             m_pipelineLayout,    
-            0, 1, &m_descriptorSets[frameIndex],
-            0, nullptr);
+            0,
+            1,
+            &m_descriptorSets[frameIndex],
+            0,
+            nullptr);
+
+        //Bind material decriptors
+        vkCmdBindDescriptorSets(cmd,
+            VK_PIPELINE_BIND_POINT_GRAPHICS,
+            m_pipelineLayout,
+            1, 
+            1, 
+            &m_descriptorSetsMaterial[0],
+            0, 
+            nullptr);
 
         VkBuffer vertexBuffers[] = { m_vertexBuffer };
         VkDeviceSize offsets[] = { 0 };
