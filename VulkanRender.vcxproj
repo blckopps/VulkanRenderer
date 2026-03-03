@@ -133,6 +133,8 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="InputMgr.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MaterialManager.cpp" />
+    <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="VulkanContext.cpp" />
     <ClCompile Include="Win32Window.cpp" />
@@ -141,9 +143,16 @@
     <ClInclude Include="App.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="InputMgr.h" />
+    <ClInclude Include="MaterialManager.h" />
+    <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="ThirdParty\Common\stb_image.h" />
+    <ClInclude Include="ThirdParty\gltf\json.hpp" />
+    <ClInclude Include="ThirdParty\gltf\stb_image.h" />
+    <ClInclude Include="ThirdParty\gltf\stb_image_write.h" />
+    <ClInclude Include="ThirdParty\gltf\tiny_gltf.h" />
     <ClInclude Include="UniformBufferObject.h" />
+    <ClInclude Include="VkHelper.h" />
     <ClInclude Include="VulkanContext.h" />
     <ClInclude Include="Win32Window.h" />
   </ItemGroup>

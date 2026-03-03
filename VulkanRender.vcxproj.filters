@@ -29,6 +29,9 @@
     <Filter Include="ThirdParty">
       <UniqueIdentifier>{cb7ac520-17da-4ccf-8eee-417a1c9291ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\MaterialManager">
+      <UniqueIdentifier>{8da34377-dc21-44e9-8981-2e56828969e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -48,6 +51,12 @@
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
       <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelLoader.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialManager.cpp">
+      <Filter>Source Files\MaterialManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -72,8 +81,29 @@
     <ClInclude Include="Camera.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="stb_image.h">
+    <ClInclude Include="ThirdParty\Common\stb_image.h">
       <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\gltf\json.hpp">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\gltf\stb_image.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\gltf\stb_image_write.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\gltf\tiny_gltf.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelLoader.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialManager.h">
+      <Filter>Source Files\MaterialManager</Filter>
+    </ClInclude>
+    <ClInclude Include="VkHelper.h">
+      <Filter>Source Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

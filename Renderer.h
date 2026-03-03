@@ -117,7 +117,7 @@ namespace vkapp
         void DestroyTexture();
 
         // low-level helpers used internally
-        uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+        //uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 
         VulkanContext* m_context = nullptr;
