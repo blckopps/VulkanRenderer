@@ -14,12 +14,14 @@
 //Local Header files
 #include "Win32Window.h"
 #include "InputMgr.h"
+#include "Camera.h"
+#include "CameraController.h"
 
 namespace vkapp {
 
-    class VulkanContext;   
-    class Renderer;       
-    class Scene;          
+    class VulkanContext;
+    class Renderer;
+    class Scene;
 
     class App {
     public:
@@ -48,8 +50,12 @@ namespace vkapp {
 
         // Engine subsystems (owned here or injected in Init)
         std::unique_ptr<VulkanContext> m_vkContext;
-        std::unique_ptr<Renderer> m_renderer;
-        //std::unique_ptr<Scene> m_scene;
+        std::unique_ptr<Renderer>      m_renderer;
+        //std::unique_ptr<Scene>        m_scene;
+
+        // Camera — owned by App, shared with Renderer via SetCamera()
+        Camera           m_camera;
+        CameraController m_cameraController;
 
         std::string m_title;
         int m_width;

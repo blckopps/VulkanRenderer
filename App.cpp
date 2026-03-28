@@ -50,6 +50,18 @@ bool App::Init()
         return false;
     }
 
+    // Set up camera starting position and hand it to the renderer
+    m_camera.position = glm::vec3(0.0f, 0.0f, 3.0f);
+    m_camera.yaw = -90.0f;   // look toward -Z
+    m_camera.pitch = 0.0f;
+    m_camera.nearPlane = 0.1f;
+    m_camera.farPlane = 100.0f;
+    m_camera.orbitRadius = 3.0f;
+    m_camera.orbitTarget = glm::vec3(0.0f);
+
+    m_cameraController.Init(&m_camera);            // derive angles from position
+    m_renderer->SetCamera(&m_camera);              // renderer reads camera each frame
+
     // Hook resize event so app can inform renderer
     m_window->SetOnResizeCallback([this](int w, int h) {
         m_width = w; m_height = h; m_resized = true;
@@ -115,6 +127,15 @@ void App::Tick(double dt)
     // Update game/app logic & scene
    // m_scene->Update(dt, *m_input);
     // you can add fixed-step physics or other subsystems here
+
+    m_inputMgr->Update();   // capture current key/mouse state
+
+    // Drive the camera — reads input, writes to m_camera
+    m_cameraController.Update(*m_inputMgr, static_cast<float>(dt));
+
+    // ESC to exit
+    if (m_inputMgr->IsKeyDown(VK_ESCAPE))
+        RequestExit();
 }
 
 void App::RenderFrame(double dt)

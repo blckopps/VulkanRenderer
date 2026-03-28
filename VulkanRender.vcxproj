@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cameracontroller.h" />
     <ClInclude Include="InputMgr.h" />
     <ClInclude Include="MaterialManager.h" />
     <ClInclude Include="ModelLoader.h" />

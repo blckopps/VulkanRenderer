@@ -105,6 +105,9 @@
     <ClInclude Include="VkHelper.h">
       <Filter>Source Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Cameracontroller.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\basic.frag.spv">

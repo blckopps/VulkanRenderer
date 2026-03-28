@@ -110,64 +110,68 @@ bool Renderer::Init(VulkanContext* context, Scene* scene)
     }*/
 
 
-   /* if (!CreateDescriptorResourcesMaterial())
-    {
-        std::cerr << "Failed to create descriptor resources material\n";
-        return false;
-    }*/
+    /* if (!CreateDescriptorResourcesMaterial())
+     {
+         std::cerr << "Failed to create descriptor resources material\n";
+         return false;
+     }*/
 
-    // m_materialManager.Init(m_context, 10);
+     // m_materialManager.Init(m_context, 10);
 
-   ///Load model
+    ///Load model
     ModelLoader modelLoader;
 
-   /* bool loaded = modelLoader.LoadModel("D:\\VKRender\\VulkanRender\\Models\\singleBlendshapeCube_sparse.glb", m_context,
-        m_materialManager, m_meshData, m_renderables);
-    */
-    /*bool loaded = modelLoader.LoadModel("D:\\VKRender\\VulkanRender\\Models\\DamagedHelmet.glb", m_context,
-        m_materialManager, m_meshData, m_renderables);
-    */
-    bool loaded = modelLoader.LoadModel("D:\\VKRender\\VulkanRender\\Models\\camera.gltf", m_context,
+    /* bool loaded = modelLoader.LoadModel("D:\\VKRender\\VulkanRender\\Models\\singleBlendshapeCube_sparse.glb", m_context,
+         m_materialManager, m_meshData, m_renderables);
+     */
+     /*bool loaded = modelLoader.LoadModel("D:\\VKRender\\VulkanRender\\Models\\DamagedHelmet.glb", m_context,
+         m_materialManager, m_meshData, m_renderables);
+     */
+    bool loaded = modelLoader.LoadModel("D:\\VKRender\\VulkanRender\\Models\\DamagedHelmet.glb", m_context,
         m_materialManager, m_meshData, m_renderables);
 
-   
+    if (!loaded) {
+        std::cerr << "Failed to load model\n";
+        return false;
+    }
+
     if (!CreateGraphicsPipeline()) {
         std::cerr << "Failed to create graphics pipeline\n";
         return false;
     }
 
-  
-   /* if (!CreateVertexBuffer()) {
-        std::cerr << "Failed to create vertex buffer\n";
-        return false;
-    }*/
 
-   /* if (!CreateIndexBuffer()) {
-        std::cerr << "Failed to create index buffer\n";
-        return false;
-    }*/
+    /* if (!CreateVertexBuffer()) {
+         std::cerr << "Failed to create vertex buffer\n";
+         return false;
+     }*/
 
-    //info
-   /* std::cerr << "--- Renderer debug info ---\n";
-    std::cerr << "swap format: " << m_context->GetSwapchainInfo().imageFormat << "\n";
-    auto ext = m_context->GetSwapchainInfo().extent;
-    std::cerr << "swap extent: " << ext.width << " x " << ext.height << "\n";
-    std::cerr << "framebuffers: " << m_framebuffers.size() << " commandBuffers: " << (m_context->GetCommandBuffer(0) != VK_NULL_HANDLE) << "\n";
-    std::cerr << "pipeline: " << (uintptr_t)m_graphicsPipeline << " pipelineLayout: " << (uintptr_t)m_pipelineLayout << "\n";
-    std::cerr << "vertexBuffer: " << (uintptr_t)m_vertexBuffer << " staging: " << (uintptr_t)m_stagingBuffer << "\n";
-    std::cerr << "TRI_VERTS count: " << CUBE_VERTS.size() << " vertexSize: " << sizeof(Vertex) << "\n";
-    std::cerr << "offset pos: " << offsetof(Vertex, pos) << " offset color: " << offsetof(Vertex, color) << "\n";*/
+     /* if (!CreateIndexBuffer()) {
+          std::cerr << "Failed to create index buffer\n";
+          return false;
+      }*/
+
+      //info
+     /* std::cerr << "--- Renderer debug info ---\n";
+      std::cerr << "swap format: " << m_context->GetSwapchainInfo().imageFormat << "\n";
+      auto ext = m_context->GetSwapchainInfo().extent;
+      std::cerr << "swap extent: " << ext.width << " x " << ext.height << "\n";
+      std::cerr << "framebuffers: " << m_framebuffers.size() << " commandBuffers: " << (m_context->GetCommandBuffer(0) != VK_NULL_HANDLE) << "\n";
+      std::cerr << "pipeline: " << (uintptr_t)m_graphicsPipeline << " pipelineLayout: " << (uintptr_t)m_pipelineLayout << "\n";
+      std::cerr << "vertexBuffer: " << (uintptr_t)m_vertexBuffer << " staging: " << (uintptr_t)m_stagingBuffer << "\n";
+      std::cerr << "TRI_VERTS count: " << CUBE_VERTS.size() << " vertexSize: " << sizeof(Vertex) << "\n";
+      std::cerr << "offset pos: " << offsetof(Vertex, pos) << " offset color: " << offsetof(Vertex, color) << "\n";*/
     std::cerr << "--------------------------\n";
 
     std::cerr << "------------Descriptor info--------------\n";
 
-  /*  std::cerr << "m_descriptorSetLayout = " << (uintptr_t)m_descriptorSetLayout
-        << ", m_descriptorPool = " << (uintptr_t)m_descriptorPool
-        << ", m_descriptorSets[0] = " << (uintptr_t)(m_descriptorSets.empty() ? 0 : m_descriptorSets[0])
-        << ", m_pipelineLayout = " << (uintptr_t)m_pipelineLayout
-        << ", m_graphicsPipeline = " << (uintptr_t)m_graphicsPipeline << "\n";
+    /*  std::cerr << "m_descriptorSetLayout = " << (uintptr_t)m_descriptorSetLayout
+          << ", m_descriptorPool = " << (uintptr_t)m_descriptorPool
+          << ", m_descriptorSets[0] = " << (uintptr_t)(m_descriptorSets.empty() ? 0 : m_descriptorSets[0])
+          << ", m_pipelineLayout = " << (uintptr_t)m_pipelineLayout
+          << ", m_graphicsPipeline = " << (uintptr_t)m_graphicsPipeline << "\n";
 
-    std::cerr << "--------------------------\n";*/
+      std::cerr << "--------------------------\n";*/
 
     return true;
 }
@@ -375,10 +379,10 @@ bool Renderer::CreateGraphicsPipeline()
     vkPipelineShaderStageCreateInfoVector[1].module = fragModule;
     vkPipelineShaderStageCreateInfoVector[1].pName = "main";
     vkPipelineShaderStageCreateInfoVector[1].pSpecializationInfo = nullptr;
-    
-    // Vertex input
-    auto bindingDesc = Vertex::getBindingDesc();
-    auto attribDesc = Vertex::getAttribDesc();
+
+    // Vertex input — use ::Vertex (ModelLoader.h) which has pos/color/uv/normal/tangent
+    auto bindingDesc = ::Vertex::getBindingDesc();
+    auto attribDesc = ::Vertex::getAttribDesc();
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{ VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO };
     vertexInputInfo.vertexBindingDescriptionCount = 1;
@@ -391,24 +395,21 @@ bool Renderer::CreateGraphicsPipeline()
     inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     inputAssembly.primitiveRestartEnable = VK_FALSE;
 
-    // Viewport & scissor (dynamic would be nicer; keep static for simplicity)
-    VkViewport viewport{};
-    viewport.x = 0.0f;
-    viewport.y = 0.0f;
-    viewport.width = (float)m_context->GetSwapchainInfo().extent.width;
-    viewport.height = (float)m_context->GetSwapchainInfo().extent.height;
-    viewport.minDepth = 0.0f;
-    viewport.maxDepth = 1.0f;
-
-    VkRect2D scissor{};
-    scissor.offset = { 0,0 };
-    scissor.extent = m_context->GetSwapchainInfo().extent;
-
+    // Dynamic viewport + scissor: no pipeline recreation needed on resize.
+    // vkCmdSetViewport / vkCmdSetScissor are called each frame in Render().
     VkPipelineViewportStateCreateInfo viewportState{ VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO };
     viewportState.viewportCount = 1;
-    viewportState.pViewports = &viewport;
+    viewportState.pViewports = nullptr;  // set dynamically
     viewportState.scissorCount = 1;
-    viewportState.pScissors = &scissor;
+    viewportState.pScissors = nullptr;  // set dynamically
+
+    std::array<VkDynamicState, 2> dynamicStates = {
+        VK_DYNAMIC_STATE_VIEWPORT,
+        VK_DYNAMIC_STATE_SCISSOR
+    };
+    VkPipelineDynamicStateCreateInfo dynamicStateCI{ VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO };
+    dynamicStateCI.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+    dynamicStateCI.pDynamicStates = dynamicStates.data();
 
     // Rasterizer
     VkPipelineRasterizationStateCreateInfo raster{ VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO };
@@ -462,6 +463,7 @@ bool Renderer::CreateGraphicsPipeline()
     vkGraphicsPipelineCreateInfo.pMultisampleState = &multisample;
     vkGraphicsPipelineCreateInfo.pColorBlendState = &colorBlendingCreateInfo;       //color
     vkGraphicsPipelineCreateInfo.pDepthStencilState = &depthStencilCreateInfo;      //depth
+    vkGraphicsPipelineCreateInfo.pDynamicState = &dynamicStateCI;                   //dynamic viewport+scissor
     vkGraphicsPipelineCreateInfo.layout = m_pipelineLayout;
     vkGraphicsPipelineCreateInfo.renderPass = m_renderPass;
     vkGraphicsPipelineCreateInfo.subpass = 0;
@@ -504,7 +506,7 @@ bool Renderer::CreateGraphicsPipelineLayout()
         //m_descriptorSetLayoutMaterial
     };
 
-    
+
 
     VkPipelineLayoutCreateInfo vkPipelineLayoutCreateInfo{};
     vkPipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -512,8 +514,14 @@ bool Renderer::CreateGraphicsPipelineLayout()
     vkPipelineLayoutCreateInfo.flags = 0;
     vkPipelineLayoutCreateInfo.setLayoutCount = vkDescriptorSetLayoutArray.size();
     vkPipelineLayoutCreateInfo.pSetLayouts = vkDescriptorSetLayoutArray.data();
-    vkPipelineLayoutCreateInfo.pushConstantRangeCount = 0;
-    vkPipelineLayoutCreateInfo.pPushConstantRanges = nullptr;
+    // Push constant: one mat4 (model matrix) per draw call — 64 bytes, vertex stage
+    VkPushConstantRange pushConstantRange{};
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.offset = 0;
+    pushConstantRange.size = sizeof(glm::mat4);  // 64 bytes
+
+    vkPipelineLayoutCreateInfo.pushConstantRangeCount = 1;
+    vkPipelineLayoutCreateInfo.pPushConstantRanges = &pushConstantRange;
 
     vkResult = vkCreatePipelineLayout(m_context->Device(), &vkPipelineLayoutCreateInfo, nullptr, &m_pipelineLayout);
     if (vkResult != VK_SUCCESS)
@@ -573,7 +581,7 @@ bool Renderer::CreateDescriptorResourcesFrame()
     VkDescriptorPoolCreateInfo vkDescriptorPoolCreateInfo{ VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO };
     vkDescriptorPoolCreateInfo.poolSizeCount = 1;       ////numof above struct count i.e poolsize
     vkDescriptorPoolCreateInfo.pPoolSizes = &poolSize;
-   vkDescriptorPoolCreateInfo.maxSets = swapchainImageCount;
+    vkDescriptorPoolCreateInfo.maxSets = swapchainImageCount;
 
     if (vkCreateDescriptorPool(m_context->Device(), &vkDescriptorPoolCreateInfo, nullptr, &m_descriptorPoolFrame) != VK_SUCCESS)
     {
@@ -639,7 +647,7 @@ bool vkapp::Renderer::CreateDescriptorResourcesMaterial()
     vkDescriptorSetLayoutCreateInfo.pBindings = &materialLayoutBinding;
 
 
-    if(vkCreateDescriptorSetLayout(m_context->Device(),
+    if (vkCreateDescriptorSetLayout(m_context->Device(),
         &vkDescriptorSetLayoutCreateInfo, nullptr, &m_descriptorSetLayoutMaterial) != VK_SUCCESS)
     {
         std::cerr << "Failed to create descriptor layout for material\n";
@@ -715,7 +723,7 @@ void vkapp::Renderer::DestroyDescriptorResourcesMaterial()
 
     if (m_descriptorPoolMaterial)
     {
-        vkDestroyDescriptorPool(device, m_descriptorPoolFrame, nullptr); m_descriptorPoolMaterial = VK_NULL_HANDLE;
+        vkDestroyDescriptorPool(device, m_descriptorPoolMaterial, nullptr); m_descriptorPoolMaterial = VK_NULL_HANDLE;
     }
 
     if (m_descriptorSetLayoutMaterial)
@@ -755,7 +763,7 @@ bool Renderer::CreateDepthResource()
 
     VkMemoryAllocateInfo vkMemoryAllocateInfo{ VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO };
     vkMemoryAllocateInfo.allocationSize = vkMemoryRequirements.size;
-    vkMemoryAllocateInfo.memoryTypeIndex = FindMemoryType(phys,vkMemoryRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+    vkMemoryAllocateInfo.memoryTypeIndex = FindMemoryType(phys, vkMemoryRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
     if (vkAllocateMemory(device, &vkMemoryAllocateInfo, nullptr, &m_depthImageMemory) != VK_SUCCESS)
     {
@@ -936,17 +944,17 @@ void Renderer::DestroyIndexBuffer()
         return;
 
     VkDevice device = m_context->Device();
-   /* if (m_stagingBuffer)
-    {
-        vkDestroyBuffer(device, m_stagingBuffer, nullptr);
-        m_stagingBuffer = VK_NULL_HANDLE;
-    }
+    /* if (m_stagingBuffer)
+     {
+         vkDestroyBuffer(device, m_stagingBuffer, nullptr);
+         m_stagingBuffer = VK_NULL_HANDLE;
+     }
 
-    if (m_stagingBufferMemory)
-    {
-        vkFreeMemory(device, m_stagingBufferMemory, nullptr);
-        m_stagingBufferMemory = VK_NULL_HANDLE;
-    }*/
+     if (m_stagingBufferMemory)
+     {
+         vkFreeMemory(device, m_stagingBufferMemory, nullptr);
+         m_stagingBufferMemory = VK_NULL_HANDLE;
+     }*/
 
     if (m_indexBuffer)
     {
@@ -954,7 +962,7 @@ void Renderer::DestroyIndexBuffer()
         m_indexBuffer = VK_NULL_HANDLE;
     }
 
-    if (m_indexBufferMemory) 
+    if (m_indexBufferMemory)
     {
         vkFreeMemory(device, m_indexBufferMemory, nullptr);
         m_indexBufferMemory = VK_NULL_HANDLE;
@@ -971,7 +979,7 @@ void Renderer::DestroyDescriptorResourcesFrame()
     //delete buffer memory
     for (auto buffer : m_uniformBuffers)
     {
-        if (buffer) 
+        if (buffer)
             vkDestroyBuffer(device, buffer, nullptr);
     }
 
@@ -986,12 +994,12 @@ void Renderer::DestroyDescriptorResourcesFrame()
     m_uniformBuffersMemory.clear();
 
     if (m_descriptorPoolFrame)
-    { 
+    {
         vkDestroyDescriptorPool(device, m_descriptorPoolFrame, nullptr); m_descriptorPoolFrame = VK_NULL_HANDLE;
     }
 
     if (m_descriptorSetLayoutFrame)
-    { 
+    {
         vkDestroyDescriptorSetLayout(device, m_descriptorSetLayoutFrame, nullptr); m_descriptorSetLayoutFrame = VK_NULL_HANDLE;
     }
 }
@@ -1255,45 +1263,41 @@ bool Renderer::BeginFrame()
 }
 
 //void Renderer::Render(Scene& /*scene*/, double /*dt*/)
-void Renderer::Render( double /*dt*/)
+void Renderer::Render(double /*dt*/)
 {
     if (!m_frameStarted || !m_context) return;
 
     const size_t frameIndex = m_currentFrame % VulkanContext::DEFAULT_SWAPCHAIN_IMAGE_COUNT;
 
-    //Update UBO
+    // -------------------------------------------------------
+    // Update per-frame UBO from the live Camera.
+    // Model matrix is pushed per-renderable via push constants.
+    // -------------------------------------------------------
     UniformBufferObject ubo{};
-    // model: a simple rotation over time (optional). If you don't have time source, use identity.
-    float angle = static_cast<float>((m_currentFrame % 360) * 0.1f * 3.14159f / 180.0f);
-   
-    ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, -1)) *
-        glm::rotate(glm::mat4(1.0f), angle, glm::vec3(1, 1, 0));/**
-                glm::scale(glm::mat4(1.0f), glm::vec3(60.0f));*/
-   
-    if (false) {    //scene
-       
-       // ubo.view = scene->mainCamera.GetView();
-       // ubo.proj = scene->mainCamera.GetProjection();
-    }
-    else 
+    ubo.model = glm::mat4(1.0f);  // unused in shader, kept for struct compat
+
+    if (m_camera)
     {
-        //position, target and up vector
-        glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 2.0f), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-        glm::mat4 proj = glm::perspective(glm::radians(45.0f),
-                                          (float)m_context->GetSwapchainInfo().extent.width / (float)m_context->GetSwapchainInfo().extent.height,
-                                           0.1f, 
-                                            100.0f);
-        proj[1][1] *= -1.0f;
-        ubo.view = view;
-        ubo.proj = proj;
+        // Keep camera aspect ratio in sync with the current swapchain size
+        const auto& ext = m_context->GetSwapchainInfo().extent;
+        m_camera->SetAspect((float)ext.width, (float)ext.height);
+
+        ubo.view = m_camera->GetView();
+        ubo.proj = m_camera->GetProjection();
+    }
+    else
+    {
+        // Fallback if no camera was set — fixed view so the screen isn't black
+        const float aspect = (float)m_context->GetSwapchainInfo().extent.width /
+            (float)m_context->GetSwapchainInfo().extent.height;
+        ubo.view = glm::lookAt(
+            glm::vec3(0.0f, 0.0f, 3.0f),
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(0.0f, 1.0f, 0.0f));
+        ubo.proj = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);
+        ubo.proj[1][1] *= -1.0f;
     }
 
-  /*  ubo.model = glm::mat4(1.0f);
-    ubo.view = glm::mat4(1.0f);
-    ubo.proj = glm::mat4(1.0f);*/
-
-
-    // write to the per-frame uniform buffer (host-coherent)
     void* data;
     vkMapMemory(m_context->Device(), m_uniformBuffersMemory[frameIndex], 0, sizeof(ubo), 0, &data);
     std::memcpy(data, &ubo, sizeof(ubo));
@@ -1344,96 +1348,60 @@ void Renderer::Render( double /*dt*/)
         // Bind pipeline + descriptor set + vertex/index buffers + draw indexed
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
 
+        // Set dynamic viewport and scissor to match current swapchain extent
+        VkViewport dynViewport{};
+        dynViewport.x = 0.0f;
+        dynViewport.y = 0.0f;
+        dynViewport.width = (float)swap.extent.width;
+        dynViewport.height = (float)swap.extent.height;
+        dynViewport.minDepth = 0.0f;
+        dynViewport.maxDepth = 1.0f;
+        vkCmdSetViewport(cmd, 0, 1, &dynViewport);
+
+        VkRect2D dynScissor{};
+        dynScissor.offset = { 0, 0 };
+        dynScissor.extent = swap.extent;
+        vkCmdSetScissor(cmd, 0, 1, &dynScissor);
+
         ///////// Draw Model renderables /////////////////
         for (const auto& renderable : m_renderables)
         {
             const Mesh& mesh = m_meshData[renderable.meshIndex];
-            const Material& mat =
-                m_materialManager.GetMaterial(renderable.materialIndex);
+            const Material& mat = m_materialManager.GetMaterial(renderable.materialIndex);
 
+            // ---- Set 0: per-frame UBO (view + proj) ----
             vkCmdBindDescriptorSets(cmd,
-				VK_PIPELINE_BIND_POINT_GRAPHICS,
-				m_pipelineLayout,
-				0,
-				1,
-				&m_descriptorSets[frameIndex],
-				0,
-				nullptr);
-            // =========================
-            //Update UBO (model)
-            // =========================
-          /*  UniformBufferObject ubo{};
-
-            ubo.model = renderable.transform;
-
-             View / Projection (same as before)
-            glm::mat4 view = glm::lookAt(
-                glm::vec3(0, 0, 3),
-                glm::vec3(0, 0, 0),
-                glm::vec3(0, 1, 0));
-
-            glm::mat4 proj = glm::perspective(
-                glm::radians(45.0f),
-                (float)m_context->GetSwapchainInfo().extent.width /
-                (float)m_context->GetSwapchainInfo().extent.height,
-                0.1f,
-                100.0f);
-
-            proj[1][1] *= -1.0f;
-
-            ubo.view = view;
-            ubo.proj = proj;
-
-             Write UBO
-            void* data;
-            vkMapMemory(m_context->Device(),
-                m_uniformBuffersMemory[frameIndex],
-                0,
-                sizeof(ubo),
-                0,
-                &data);
-
-            memcpy(data, &ubo, sizeof(ubo));
-            vkUnmapMemory(m_context->Device(),
-                m_uniformBuffersMemory[frameIndex]);*/
-
-            // =========================
-            // Bind Material (set = 1)
-            // =========================
-            vkCmdBindDescriptorSets(
-                cmd,
                 VK_PIPELINE_BIND_POINT_GRAPHICS,
                 m_pipelineLayout,
-                1,  // set index = 1
-                1,
+                0, 1,
+                &m_descriptorSets[frameIndex],
+                0, nullptr);
+
+            // ---- Set 1: per-material texture ----
+            vkCmdBindDescriptorSets(cmd,
+                VK_PIPELINE_BIND_POINT_GRAPHICS,
+                m_pipelineLayout,
+                1, 1,
                 &mat.descriptorSet,
-                0,
-                nullptr);
+                0, nullptr);
 
-            // =========================
-            // Bind Mesh
-            // =========================
-            VkBuffer vb[] = { mesh.vertexBuffer };
+            // ---- Push constant: per-renderable model matrix (node world transform) ----
+            vkCmdPushConstants(
+                cmd,
+                m_pipelineLayout,
+                VK_SHADER_STAGE_VERTEX_BIT,
+                0,
+                sizeof(glm::mat4),
+                &renderable.transform);
+
+            // ---- Bind vertex + index buffers ----
+            VkBuffer     vb[] = { mesh.vertexBuffer };
             VkDeviceSize offsets[] = { 0 };
-
             vkCmdBindVertexBuffers(cmd, 0, 1, vb, offsets);
+            vkCmdBindIndexBuffer(cmd, mesh.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-            vkCmdBindIndexBuffer(
-                cmd,
-                mesh.indexBuffer,
-                0,
-                VK_INDEX_TYPE_UINT32);
-
-            // =========================
-            // Draw
-            // =========================
-            vkCmdDrawIndexed(
-                cmd,
-                mesh.indexCount,
-                1,
-                0,
-                0,
-                0);
+            // ---- Draw ----
+            vkCmdDrawIndexed(cmd, mesh.indexCount, 1, 0, 0, 0);
         }
 
 
@@ -1553,4 +1521,3 @@ void Renderer::OnResize(int width, int height)
         std::cerr << "Failed to recreate framebuffers after resize\n";
     }
 }
-
