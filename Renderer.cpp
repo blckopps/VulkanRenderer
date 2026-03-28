@@ -14,8 +14,6 @@
 #pragma once
 #include "VkHelper.h"
 
-#include "ModelLoader.h"
-#include "MaterialManager.h"
 
 using namespace vkapp;
 
@@ -118,11 +116,27 @@ bool Renderer::Init(VulkanContext* context, Scene* scene)
         return false;
     }*/
 
+    // m_materialManager.Init(m_context, 10);
+
+   ///Load model
+    ModelLoader modelLoader;
+
+   /* bool loaded = modelLoader.LoadModel("D:\\VKRender\\VulkanRender\\Models\\singleBlendshapeCube_sparse.glb", m_context,
+        m_materialManager, m_meshData, m_renderables);
+    */
+    /*bool loaded = modelLoader.LoadModel("D:\\VKRender\\VulkanRender\\Models\\DamagedHelmet.glb", m_context,
+        m_materialManager, m_meshData, m_renderables);
+    */
+    bool loaded = modelLoader.LoadModel("D:\\VKRender\\VulkanRender\\Models\\camera.gltf", m_context,
+        m_materialManager, m_meshData, m_renderables);
+
+   
     if (!CreateGraphicsPipeline()) {
         std::cerr << "Failed to create graphics pipeline\n";
         return false;
     }
 
+  
    /* if (!CreateVertexBuffer()) {
         std::cerr << "Failed to create vertex buffer\n";
         return false;
@@ -485,9 +499,12 @@ bool Renderer::CreateGraphicsPipelineLayout()
 
     const std::vector<VkDescriptorSetLayout> vkDescriptorSetLayoutArray =
     {
-        m_descriptorSetLayoutFrame
+        m_descriptorSetLayoutFrame,
+        m_materialManager.GetLayout()
         //m_descriptorSetLayoutMaterial
     };
+
+    
 
     VkPipelineLayoutCreateInfo vkPipelineLayoutCreateInfo{};
     vkPipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -1248,8 +1265,11 @@ void Renderer::Render( double /*dt*/)
     UniformBufferObject ubo{};
     // model: a simple rotation over time (optional). If you don't have time source, use identity.
     float angle = static_cast<float>((m_currentFrame % 360) * 0.1f * 3.14159f / 180.0f);
-    ubo.model = glm::rotate(glm::mat4(1.0f), 10.0f, glm::vec3(0, 1, 0));
-
+   
+    ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, -1)) *
+        glm::rotate(glm::mat4(1.0f), angle, glm::vec3(1, 1, 0));/**
+                glm::scale(glm::mat4(1.0f), glm::vec3(60.0f));*/
+   
     if (false) {    //scene
        
        // ubo.view = scene->mainCamera.GetView();
@@ -1324,35 +1344,133 @@ void Renderer::Render( double /*dt*/)
         // Bind pipeline + descriptor set + vertex/index buffers + draw indexed
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
 
-        // bind the descriptor set that was allocated using m_descriptorSetLayout
-        vkCmdBindDescriptorSets(cmd,
-            VK_PIPELINE_BIND_POINT_GRAPHICS,
-            m_pipelineLayout,    
-            0,
-            1,
-            &m_descriptorSets[frameIndex],
-            0,
-            nullptr);
+        ///////// Draw Model renderables /////////////////
+        for (const auto& renderable : m_renderables)
+        {
+            const Mesh& mesh = m_meshData[renderable.meshIndex];
+            const Material& mat =
+                m_materialManager.GetMaterial(renderable.materialIndex);
 
-        //Bind material decriptors
-        vkCmdBindDescriptorSets(cmd,
-            VK_PIPELINE_BIND_POINT_GRAPHICS,
-            m_pipelineLayout,
-            1, 
-            1, 
-            &m_descriptorSetsMaterial[0],
-            0, 
-            nullptr);
+            vkCmdBindDescriptorSets(cmd,
+				VK_PIPELINE_BIND_POINT_GRAPHICS,
+				m_pipelineLayout,
+				0,
+				1,
+				&m_descriptorSets[frameIndex],
+				0,
+				nullptr);
+            // =========================
+            //Update UBO (model)
+            // =========================
+          /*  UniformBufferObject ubo{};
 
-        VkBuffer vertexBuffers[] = { m_vertexBuffer };
-        VkDeviceSize offsets[] = { 0 };
-        vkCmdBindVertexBuffers(cmd, 0, 1, vertexBuffers, offsets);
+            ubo.model = renderable.transform;
+
+             View / Projection (same as before)
+            glm::mat4 view = glm::lookAt(
+                glm::vec3(0, 0, 3),
+                glm::vec3(0, 0, 0),
+                glm::vec3(0, 1, 0));
+
+            glm::mat4 proj = glm::perspective(
+                glm::radians(45.0f),
+                (float)m_context->GetSwapchainInfo().extent.width /
+                (float)m_context->GetSwapchainInfo().extent.height,
+                0.1f,
+                100.0f);
+
+            proj[1][1] *= -1.0f;
+
+            ubo.view = view;
+            ubo.proj = proj;
+
+             Write UBO
+            void* data;
+            vkMapMemory(m_context->Device(),
+                m_uniformBuffersMemory[frameIndex],
+                0,
+                sizeof(ubo),
+                0,
+                &data);
+
+            memcpy(data, &ubo, sizeof(ubo));
+            vkUnmapMemory(m_context->Device(),
+                m_uniformBuffersMemory[frameIndex]);*/
+
+            // =========================
+            // Bind Material (set = 1)
+            // =========================
+            vkCmdBindDescriptorSets(
+                cmd,
+                VK_PIPELINE_BIND_POINT_GRAPHICS,
+                m_pipelineLayout,
+                1,  // set index = 1
+                1,
+                &mat.descriptorSet,
+                0,
+                nullptr);
+
+            // =========================
+            // Bind Mesh
+            // =========================
+            VkBuffer vb[] = { mesh.vertexBuffer };
+            VkDeviceSize offsets[] = { 0 };
+
+            vkCmdBindVertexBuffers(cmd, 0, 1, vb, offsets);
+
+            vkCmdBindIndexBuffer(
+                cmd,
+                mesh.indexBuffer,
+                0,
+                VK_INDEX_TYPE_UINT32);
+
+            // =========================
+            // Draw
+            // =========================
+            vkCmdDrawIndexed(
+                cmd,
+                mesh.indexCount,
+                1,
+                0,
+                0,
+                0);
+        }
 
 
-        //vkCmdBindIndexBuffer(cmd, m_indexBuffer, 0, VK_INDEX_TYPE_UINT16);
-        //vkCmdDraw(cmd, static_cast<uint32_t>(TRI_VERTS.size()), 1, 0, 0);
-        //vkCmdDrawIndexed(cmd, static_cast<uint32_t>(CUBE_INDICES.size()), 1, 0, 0, 0);
+        ///////////// ENd renderables ///////////////////////
 
+        //if (false)
+        //{
+        //    // bind the descriptor set that was allocated using m_descriptorSetLayout
+        //    vkCmdBindDescriptorSets(cmd,
+        //        VK_PIPELINE_BIND_POINT_GRAPHICS,
+        //        m_pipelineLayout,
+        //        0,
+        //        1,
+        //        &m_descriptorSets[frameIndex],
+        //        0,
+        //        nullptr);
+
+        //    //Bind material decriptors
+        //    vkCmdBindDescriptorSets(cmd,
+        //        VK_PIPELINE_BIND_POINT_GRAPHICS,
+        //        m_pipelineLayout,
+        //        1,
+        //        1,
+        //        &m_descriptorSetsMaterial[0],
+        //        0,
+        //        nullptr);
+
+        //    VkBuffer vertexBuffers[] = { m_vertexBuffer };
+        //    VkDeviceSize offsets[] = { 0 };
+        //    vkCmdBindVertexBuffers(cmd, 0, 1, vertexBuffers, offsets);
+
+
+        //    //vkCmdBindIndexBuffer(cmd, m_indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+        //    //vkCmdDraw(cmd, static_cast<uint32_t>(TRI_VERTS.size()), 1, 0, 0);
+        //    //vkCmdDrawIndexed(cmd, static_cast<uint32_t>(CUBE_INDICES.size()), 1, 0, 0, 0);
+
+        //}
     }
 
 

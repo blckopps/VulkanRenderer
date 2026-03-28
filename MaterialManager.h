@@ -15,16 +15,16 @@ namespace vkapp
     struct Vertex;
 }
 
-struct Material
-{
-    VkImage        image = VK_NULL_HANDLE;
-    VkDeviceMemory memory = VK_NULL_HANDLE;
-    VkImageView    imageView = VK_NULL_HANDLE;
-    VkSampler      sampler = VK_NULL_HANDLE;
-    VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
-};
+//struct Material
+//{
+//    VkImage        image = VK_NULL_HANDLE;
+//    VkDeviceMemory memory = VK_NULL_HANDLE;
+//    VkImageView    imageView = VK_NULL_HANDLE;
+//    VkSampler      sampler = VK_NULL_HANDLE;
+//    VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+//};
 
-
+//vkapp::Material;
 
 
 class MaterialManager
@@ -44,6 +44,8 @@ public:
 
     VkDescriptorSetLayout GetLayout() const { return m_materialSetLayout; }
     const Material& GetMaterial(uint32_t index) const { return m_materials[index]; }
+
+    const inline int GetMaterialCount() { return m_materials.size(); };
 
 private:
     vkapp::VulkanContext* m_context = nullptr;

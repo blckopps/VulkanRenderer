@@ -134,6 +134,8 @@ bool ModelLoader::LoadModel(const std::string& path, vkapp::VulkanContext* conte
 	bool ret = loader.LoadBinaryFromFile(&model, &err, &warn, path);
 	if (!ret) return false;
 
+    //set material manager
+    materialManager.Init(context, model.materials.size());
 	//Extract the model data
 
     //1.Extract glTF Materials
@@ -296,11 +298,35 @@ bool ModelLoader::LoadModel(const std::string& path, vkapp::VulkanContext* conte
             vkFreeMemory(device, indexStagingMem, nullptr);
 
 
-            // =========================
-            // 3️⃣ Store Mesh
-            // =========================
+            //Save data
+            uint32_t meshIndex =
+                static_cast<uint32_t>(outMeshes.size());
 
-            m_meshes.push_back(gpuMesh);
+            outMeshes.push_back(gpuMesh);
+
+
+            Renderable r{};
+
+            r.meshIndex = meshIndex;
+
+            if (primitive.material >= 0 &&
+                primitive.material < gltfMaterialToEngineMaterial.size())
+            {
+                r.materialIndex =
+                    gltfMaterialToEngineMaterial[primitive.material];
+            }
+            else
+            {
+                r.materialIndex =
+                    materialManager.CreateDefaultMaterial();
+            }
+
+            r.transform = glm::mat4(1.0f);
+
+            outRenderables.push_back(r);
+
+            std::cout << "Renderable added\n";
+
 
         }
     }

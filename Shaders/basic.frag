@@ -9,4 +9,5 @@ layout(set = 1, binding = 0) uniform sampler2D uTextureSampler;
 void main() 
 {
     outColor = texture(uTextureSampler, outUV);
+    //outColor = vec4(1.0, 0.0f, 0.0f, 1.0f);
 }

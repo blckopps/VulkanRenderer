@@ -11,6 +11,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <functional>
 
+struct Material
+{
+    VkImage        image = VK_NULL_HANDLE;
+    VkDeviceMemory memory = VK_NULL_HANDLE;
+    VkImageView    imageView = VK_NULL_HANDLE;
+    VkSampler      sampler = VK_NULL_HANDLE;
+    VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
+};
 
 static std::vector<char> ReadFile(const std::string& filename)
 {

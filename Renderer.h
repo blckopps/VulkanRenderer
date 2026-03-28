@@ -5,6 +5,9 @@
 #include <array>
 
 
+#include "ModelLoader.h"
+#include "MaterialManager.h"
+
 namespace vkapp 
 {
 
@@ -23,11 +26,12 @@ namespace vkapp
         int height = 0;
     };
 
-    struct Material
+    /*struct Material
     {
         Texture *texture = nullptr;
         VkDescriptorSet vkDescriptorSet = VK_NULL_HANDLE;
-    };
+    };*/
+    
 
     struct Vertex
     {
@@ -175,5 +179,8 @@ namespace vkapp
         Texture m_texture{};
         Material m_material{};
 
+        MaterialManager m_materialManager ;
+        std::vector<Mesh> m_meshData;
+        std::vector<Renderable> m_renderables;
     };
 } // namespace vkapp
