@@ -47,6 +47,11 @@ public:
 
     const inline int GetMaterialCount() { return m_materials.size(); };
 
+
+    bool CreateMaterialUBO(Material& material);
+    bool CreateMaterialDescriptorSet(Material& material);
+    bool CreateDefaultMetallicRoughnessTexture(Material& material);
+
 private:
     vkapp::VulkanContext* m_context = nullptr;
 

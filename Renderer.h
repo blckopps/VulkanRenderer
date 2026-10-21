@@ -7,12 +7,13 @@
 
 #include "ModelLoader.h"
 #include "MaterialManager.h"
+#include "Camera.h"
 
-namespace vkapp 
+namespace vkapp
 {
 
     class VulkanContext;
-    class Scene; 
+    class Scene;
 
 
     struct Texture
@@ -31,49 +32,10 @@ namespace vkapp
         Texture *texture = nullptr;
         VkDescriptorSet vkDescriptorSet = VK_NULL_HANDLE;
     };*/
-    
-
-    struct Vertex
-    {
-        float pos[3];
-        float color[3];
-        float uv[2];
-
-        static VkVertexInputBindingDescription getBindingDesc()
-        {
-            VkVertexInputBindingDescription vkVertexInputBindingDescription{};
-            vkVertexInputBindingDescription.binding = 0;
-            vkVertexInputBindingDescription.stride = sizeof(Vertex);
-            vkVertexInputBindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-            return vkVertexInputBindingDescription;
-        }
-
-        static std::array<VkVertexInputAttributeDescription, 3> getAttribDesc()
-        {
-            std::array<VkVertexInputAttributeDescription, 3> attrs{};
-
-            //POSITION
-            attrs[0].binding = 0;                   // is the binding number which this attribute takes its data from.
-            attrs[0].location = 0;                  //layout(location=0) in vec3 vPosition
-            attrs[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-            attrs[0].offset = offsetof(Vertex, pos);
-
-            //COLOR
-            attrs[1].binding = 0;                   // is the binding number which this attribute takes its data from.
-            attrs[1].location = 1;                  //layout(location=1) in vec3 color
-            attrs[1].format = VK_FORMAT_R32G32B32_SFLOAT; 
-            attrs[1].offset = offsetof(Vertex, color);  //Jump
-
-            //UV
-            attrs[2].binding = 0;                   // is the binding number which this attribute takes its data from.
-            attrs[2].location = 2;                  //layout(location=1) in vec3 color
-            attrs[2].format = VK_FORMAT_R32G32_SFLOAT;
-            attrs[2].offset = offsetof(Vertex, uv);  //Jump
 
 
-            return attrs;
-        }
-    };
+    // Vertex is defined in ModelLoader.h (includes pos/color/uv/normal/tangent).
+    // That header is already included above, so ::Vertex is available here.
 
     class Renderer
     {
@@ -87,6 +49,10 @@ namespace vkapp
         bool BeginFrame();
         //void Render(Scene& scene, double dt);
         void Render(double dt);
+
+        // Set the camera used for view/projection each frame.
+        // Call once after Init, and whenever the camera changes.
+        void SetCamera(Camera* camera) { m_camera = camera; }
         void EndFrame();
 
         void OnResize(int width, int height);
@@ -112,7 +78,7 @@ namespace vkapp
 
         bool CreateDescriptorResourcesMaterial();
         void DestroyDescriptorResourcesMaterial();
-         
+
         bool CreateDepthResource();
         void DestroyDepthResource();
 
@@ -126,6 +92,7 @@ namespace vkapp
 
         VulkanContext* m_context = nullptr;
         Scene* m_scene = nullptr;
+        Camera* m_camera = nullptr;  // not owned — set via SetCamera()
 
         //Depth
         VkImage m_depthImage = VK_NULL_HANDLE;
@@ -154,7 +121,7 @@ namespace vkapp
         //Per frame
         VkDescriptorPool m_descriptorPoolFrame = VK_NULL_HANDLE;
         VkDescriptorSetLayout m_descriptorSetLayoutFrame = VK_NULL_HANDLE;
-        
+
         //Material
         VkDescriptorPool m_descriptorPoolMaterial = VK_NULL_HANDLE;
         VkDescriptorSetLayout m_descriptorSetLayoutMaterial = VK_NULL_HANDLE;
@@ -179,7 +146,7 @@ namespace vkapp
         Texture m_texture{};
         Material m_material{};
 
-        MaterialManager m_materialManager ;
+        MaterialManager m_materialManager;
         std::vector<Mesh> m_meshData;
         std::vector<Renderable> m_renderables;
     };
