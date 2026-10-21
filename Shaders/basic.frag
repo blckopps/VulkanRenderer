@@ -8,12 +8,20 @@ layout(location = 1) in vec3  inNormal;
 layout(location = 2) in vec3  inTangent;
 layout(location = 3) in vec3  inBitangent;
 layout(location = 4) in vec3  inWorldPos;
-layout(location = 5) in vec3  inColor;
+layout(location = 5) in vec4  inColor;
 
 // -------------------------------------------------------
 // Set 1: per-material texture (bound per renderable)
 // -------------------------------------------------------
-layout(set = 1, binding = 0) uniform sampler2D albedoTexture;
+layout(set = 1, binding = 0) uniform sampler2D baseColorTexture;
+layout(set = 1, binding = 1) uniform sampler2D metallicRoughnessTexture;
+layout(set = 1, binding = 2) uniform MaterialUBO
+{
+    vec4 baseColorFactor;
+
+    float metallicFactor;
+    float roughnessFactor;
+}material;
 
 // -------------------------------------------------------
 // Output
@@ -23,7 +31,7 @@ layout(location = 0) out vec4 outColor;
 void main()
 {
     // Sample albedo texture
-    vec4 albedo = texture(albedoTexture, inUV) * vec4(inColor, 1.0);
+    vec4 albedo = texture(albedoTexture, inUV) * inColor;
 
     // Simple directional light in world space
     vec3 lightDir   = normalize(vec3(1.0, 2.0, 1.0));

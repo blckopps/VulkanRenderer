@@ -122,6 +122,12 @@
     <None Include="Shaders\basic.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\PBR.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PBR.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="rock.png">

@@ -162,6 +162,8 @@
     <None Include="Shaders\basic.frag.spv" />
     <None Include="Shaders\basic.vert" />
     <None Include="Shaders\basic.vert.spv" />
+    <None Include="Shaders\PBR.frag" />
+    <None Include="Shaders\PBR.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="rock.png" />

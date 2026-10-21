@@ -13,12 +13,46 @@
 
 struct Material
 {
+    //Base Color
     VkImage        image = VK_NULL_HANDLE;
     VkDeviceMemory memory = VK_NULL_HANDLE;
     VkImageView    imageView = VK_NULL_HANDLE;
     VkSampler      sampler = VK_NULL_HANDLE;
+
+    //Metallic/Roughness
+    VkImage        metallicRoughnessimage = VK_NULL_HANDLE;
+    VkDeviceMemory metallicRoughnessMemory = VK_NULL_HANDLE;
+    VkImageView    metallicRoughnessImageView = VK_NULL_HANDLE;
+    VkSampler      metallicRoughnessSampler = VK_NULL_HANDLE;
+
+    //glTF base color factor
+    glm::vec4 baseColorFactor = glm::vec4(1.0f);
+
+
+    //Material factors
+    VkBuffer materialUBO = VK_NULL_HANDLE;
+    VkDeviceMemory materialUBOMemory = VK_NULL_HANDLE;
+
+    float metallicFactor = 1.0f;
+    float roughnessFactor = 1.0f;
+
+
     VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
 };
+
+//FRAGMENT shader maching struct
+// CPU-side material uniform buffer.
+// Must match the GLSL std140 layout.
+struct MaterialUBO
+{
+    glm::vec4 baseColorFactor;
+
+    // x = metallic factor
+    // y = roughness factor
+    // z, w = padding / reserved
+    glm::vec4 metallicRoughness;
+};
+
 
 static std::vector<char> ReadFile(const std::string& filename)
 {

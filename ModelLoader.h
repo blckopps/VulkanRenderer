@@ -24,65 +24,87 @@ namespace vkapp
 
 // ============================================================
 //  Vertex  —  pos / color / uv / normal / tangent
-//  NOTE: Renderer.h must use THIS definition (or include this
-//        header and remove its own Vertex struct).
+//  
 // ============================================================
 struct Vertex
 {
     glm::vec3 pos;
-    glm::vec3 color;
-    glm::vec2 uv;
     glm::vec3 normal;
-    glm::vec4 tangent;   // xyz = tangent dir, w = bitangent sign (+1/-1)
+    glm::vec4 tangent;
+    glm::vec2 texCoord0;
+    glm::vec2 texCoord1;
+    glm::vec4 color;
 
-    // ---- Vulkan pipeline descriptions ----
+    // Optional skinning data
+    glm::uvec4 joints;
+    glm::vec4 weights;
+
     static VkVertexInputBindingDescription getBindingDesc()
     {
-        VkVertexInputBindingDescription desc{};
-        desc.binding = 0;
-        desc.stride = sizeof(Vertex);
-        desc.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-        return desc;
+        VkVertexInputBindingDescription binding{};
+        binding.binding = 0;
+        binding.stride = sizeof(Vertex);
+        binding.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+        return binding;
     }
 
-    static std::array<VkVertexInputAttributeDescription, 5> getAttribDesc()
+    static std::array<VkVertexInputAttributeDescription, 8>
+        getAttribDesc()
     {
-        std::array<VkVertexInputAttributeDescription, 5> attrs{};
+        std::array<VkVertexInputAttributeDescription, 8> attributes{};
 
-        // location 0 : position
-        attrs[0].binding = 0;
-        attrs[0].location = 0;
-        attrs[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-        attrs[0].offset = offsetof(Vertex, pos);
+        // POSITION
+        attributes[0].location = 0;
+        attributes[0].binding = 0;
+        attributes[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributes[0].offset = offsetof(Vertex, pos);
 
-        // location 1 : color
-        attrs[1].binding = 0;
-        attrs[1].location = 1;
-        attrs[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-        attrs[1].offset = offsetof(Vertex, color);
+        // NORMAL
+        attributes[1].location = 1;
+        attributes[1].binding = 0;
+        attributes[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+        attributes[1].offset = offsetof(Vertex, normal);
 
-        // location 2 : uv
-        attrs[2].binding = 0;
-        attrs[2].location = 2;
-        attrs[2].format = VK_FORMAT_R32G32_SFLOAT;
-        attrs[2].offset = offsetof(Vertex, uv);
+        // TANGENT
+        attributes[2].location = 2;
+        attributes[2].binding = 0;
+        attributes[2].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+        attributes[2].offset = offsetof(Vertex, tangent);
 
-        // location 3 : normal
-        attrs[3].binding = 0;
-        attrs[3].location = 3;
-        attrs[3].format = VK_FORMAT_R32G32B32_SFLOAT;
-        attrs[3].offset = offsetof(Vertex, normal);
+        // TEXCOORD_0
+        attributes[3].location = 3;
+        attributes[3].binding = 0;
+        attributes[3].format = VK_FORMAT_R32G32_SFLOAT;
+        attributes[3].offset = offsetof(Vertex, texCoord0);
 
-        // location 4 : tangent  (vec4 — w holds bitangent sign)
-        attrs[4].binding = 0;
-        attrs[4].location = 4;
-        attrs[4].format = VK_FORMAT_R32G32B32A32_SFLOAT;
-        attrs[4].offset = offsetof(Vertex, tangent);
+        // TEXCOORD_1
+        attributes[4].location = 4;
+        attributes[4].binding = 0;
+        attributes[4].format = VK_FORMAT_R32G32_SFLOAT;
+        attributes[4].offset = offsetof(Vertex, texCoord1);
 
-        return attrs;
+        // COLOR_0
+        attributes[5].location = 5;
+        attributes[5].binding = 0;
+        attributes[5].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+        attributes[5].offset = offsetof(Vertex, color);
+
+        // JOINTS_0
+        attributes[6].location = 6;
+        attributes[6].binding = 0;
+        attributes[6].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+        attributes[6].offset = offsetof(Vertex, joints);
+
+        // WEIGHTS_0
+        attributes[7].location = 7;
+        attributes[7].binding = 0;
+        attributes[7].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+        attributes[7].offset = offsetof(Vertex, weights);
+
+        return attributes;
     }
 };
-
 // ============================================================
 //  GPU-side mesh buffers
 // ============================================================
@@ -90,9 +112,14 @@ struct Mesh
 {
     VkBuffer       vertexBuffer = VK_NULL_HANDLE;
     VkDeviceMemory vertexMemory = VK_NULL_HANDLE;
+
     VkBuffer       indexBuffer = VK_NULL_HANDLE;
     VkDeviceMemory indexMemory = VK_NULL_HANDLE;
+
     uint32_t       indexCount = 0;
+    uint32_t       vertexCount = 0;
+
+    uint32_t       materialIndex = 0;
 };
 
 // ============================================================
@@ -121,6 +148,9 @@ public:
         std::vector<Mesh>& outMeshes,
         std::vector<Renderable>& outRenderables);
 
+    void CleanUp();
+
 private:
+    vkapp::VulkanContext* m_context = nullptr;
     std::vector<Mesh> m_meshes; // internal scratch — not used across calls
 };

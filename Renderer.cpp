@@ -186,6 +186,38 @@ void Renderer::Cleanup()
     if (device == VK_NULL_HANDLE)
         return;
 
+    //clean model mesh data
+    for (auto& mesh : m_meshData)
+    {
+        //VERTEX
+        if (mesh.vertexBuffer)
+        {
+            vkDestroyBuffer(m_context->Device(), mesh.vertexBuffer, nullptr);
+            mesh.vertexBuffer = VK_NULL_HANDLE;
+        }
+
+        if (mesh.vertexMemory)
+        {
+            vkFreeMemory(m_context->Device(), mesh.vertexMemory, nullptr);
+            mesh.vertexMemory = VK_NULL_HANDLE;
+        }
+
+        //INDEX
+        if (mesh.indexBuffer)
+        {
+            vkDestroyBuffer(m_context->Device(), mesh.indexBuffer, nullptr);
+            mesh.indexBuffer = VK_NULL_HANDLE;
+        }
+
+        if (mesh.indexMemory)
+        {
+            vkFreeMemory(m_context->Device(), mesh.indexMemory, nullptr);
+            mesh.indexMemory = VK_NULL_HANDLE;
+        }
+    }
+
+    m_materialManager.Cleanup();
+
     DestroyIndexBuffer();
     DestroyVertexBuffer();
     DestroyGraphicsPipelineAndLayout();
@@ -318,8 +350,13 @@ bool Renderer::CreateGraphicsPipeline()
     VkDevice device = m_context->Device();
 
     // Load SPIR-V modules
-    auto vertCode = ReadFile("shaders/basic.vert.spv");
-    auto fragCode = ReadFile("shaders/basic.frag.spv");
+    // Basic texture/color
+   // auto vertCode = ReadFile("shaders/basic.vert.spv");
+    //auto fragCode = ReadFile("shaders/basic.frag.spv");
+
+    //PBR Stage 1:
+    auto vertCode = ReadFile("shaders/PBR.vert.spv");
+    auto fragCode = ReadFile("shaders/PBR.frag.spv");
 
     std::cerr << "Vert SPV size: " << vertCode.size() << "\n";
     std::cerr << "Vert SPV size: " << fragCode.size() << "\n";
@@ -1318,9 +1355,9 @@ void Renderer::Render(double /*dt*/)
     // Begin render pass with a clear color
     const auto& swap = m_context->GetSwapchainInfo();
 
-    vkClearColorValue.float32[0] = 0.0f;
-    vkClearColorValue.float32[1] = 0.0f;
-    vkClearColorValue.float32[2] = 1.0f;
+    vkClearColorValue.float32[0] = 0.05f;
+    vkClearColorValue.float32[1] = 0.05f;
+    vkClearColorValue.float32[2] = 0.05f;
     vkClearColorValue.float32[3] = 1.0f;
 
     vkClearDepthStencilValue.depth = 1.0f;	//float

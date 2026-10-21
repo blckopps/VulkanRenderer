@@ -4,10 +4,13 @@
 // Vertex inputs  (must match Vertex struct in ModelLoader.h)
 // -------------------------------------------------------
 layout(location = 0) in vec3 inPos;
-layout(location = 1) in vec3 inColor;
-layout(location = 2) in vec2 inUV;
-layout(location = 3) in vec3 inNormal;
-layout(location = 4) in vec4 inTangent;   // w = bitangent sign
+layout(location = 1) in vec3 inNormal ;
+layout(location = 2) in vec4 inTangent;
+layout(location = 3) in vec2 inUV_0;
+layout(location = 4) in vec2 inUV_1;  
+layout(location = 5) in vec4 inColor;   
+layout(location = 6) in vec4 inJoints;   
+layout(location = 7) in vec4 inWeights;   
 
 // -------------------------------------------------------
 // Set 0: per-frame UBO  (view + proj, written once per frame)
@@ -37,7 +40,7 @@ layout(location = 1) out vec3  outNormal;     // world-space normal
 layout(location = 2) out vec3  outTangent;    // world-space tangent
 layout(location = 3) out vec3  outBitangent;  // world-space bitangent
 layout(location = 4) out vec3  outWorldPos;   // world-space position
-layout(location = 5) out vec3  outColor;
+layout(location = 5) out vec4  outColor;
 
 void main()
 {
@@ -49,7 +52,7 @@ void main()
     gl_Position = ubo.proj * ubo.view * worldPos;
 
     // Pass UVs and vertex color through
-    outUV    = inUV;
+    outUV    = inUV_0;
     outColor = inColor;
 
     // Transform normal and tangent to world space.
